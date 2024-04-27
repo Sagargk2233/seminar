@@ -2,17 +2,28 @@ import React from "react";
 
 import styles from "./About.module.css";
 import { getImageUrl } from "../../utils";
+import animationData from '../../data/dev2.json';
+import Lottie from "react-lottie";
 
 export const About = () => {
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice'
+    }
+  }
   return (
     <section className={styles.container} id="about">
       <h2 className={styles.title}>About</h2>
       <div className={styles.content}>
-        <img
+        {/* <img
           src={getImageUrl("about/aboutImage.png")}
           alt="Me sitting with a laptop"
           className={styles.aboutImage}
-        />
+        /> */}
+        <Lottie options={defaultOptions} height={300} width={500} />
         <ul className={styles.aboutItems}>
           <li className={styles.aboutItem}>
             <img src={getImageUrl("about/cursorIcon.png")} alt="Cursor icon" />

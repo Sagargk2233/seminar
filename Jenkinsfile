@@ -26,7 +26,9 @@ pipeline {
         withCredentials([string(credentialsId: 'heroku-api-key', variable: 'HEROKU_API_KEY')]) {
           bat '''
             git init
-            git remote add heroku https://git.heroku.com/$APP_NAME.git
+            git config user.email "chauhansagargk@gmail.com"
+            git config user.name "Sagargk2233"
+            git remote add heroku https://github.com/Sagargk2233/seminar.git
             git add .
             git commit -m "Deploy to Heroku"
             git push -f heroku master

@@ -1,70 +1,31 @@
 pipeline {
-  agent any
-  options {
-    buildDiscarder(logRotator(numToKeepStr: '5'))
-  }
-  environment {
-    HEROKU_API_KEY = credentials('heroku-api-key')
-    HEROKU_EMAIL = 'chauhansagargk@gmail.com'
-    APP_NAME = 'react-new-portfolio'
-  }
-  stages {
-    stage('Checkout') {
-      steps {
-        echo 'Checking out the code...'
-        checkout scm
-      }
-    }
-    stage('Install Dependencies') {
-      steps {
-        echo 'Installing dependencies...'
-        bat 'npm install'
-      }
-    }
-    stage('Install Heroku') {
-      steps {
-        echo 'Installing Heroku...'
-        bat 'npm install -g heroku'
-      }
-    }
-    stage('Build') {
-      steps {
-        echo 'Building the application...'
-        bat 'npm run build'
-      }
-    }
-    stage('Deploy to Heroku') {
-      steps {
-        echo 'Deploying to Heroku...'
-        withCredentials([string(credentialsId: 'heroku-api-key', variable: 'HEROKU_API_KEY')]) {
-            // bat "echo $HEROKU_API_KEY | heroku auth:token"
+    agent any
 
-            bat """
-              echo machine api.heroku.com > "%USERPROFILE%\\.netrc"
-              echo login %HEROKU_EMAIL% >> "%USERPROFILE%\\.netrc"
-              echo password %HEROKU_API_KEY% >> "%USERPROFILE%\\.netrc"
-              echo machine git.heroku.com >> "%USERPROFILE%\\.netrc"
-              echo login %HEROKU_EMAIL% >> "%USERPROFILE%\\.netrc"
-              echo password %HEROKU_API_KEY% >> "%USERPROFILE%\\.netrc"
+    environment {
+        NETLIFY_AUTH_TOKEN = credentials('netlify-token') 
+    }
 
-              git init
-              git config user.email "chauhansagargk@gmail.com"
-              git config user.name "Sagargk2233"
-              git add .
-              git commit -m "Deploy to Heroku" || echo "No changes to commit"
-              heroku git:remote -a %APP_NAME%
-              heroku buildpacks:set heroku/nodejs --app %APP_NAME%
-              heroku git:remote -a $APP_NAME
-              git push heroku main
-            """
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/Sagargk2233/seminar.git' 
+            }
         }
-      }
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+        stage('Deploy to Netlify') {
+            steps {
+                sh 'npm install -g netlify-cli'
+                sh 'netlify deploy --prod --dir=build'
+            }
+        }
     }
-  }
-  post {
-    always {
-      echo 'Cleaning up workspace...'
-      deleteDir()
-    }
-  }
 }

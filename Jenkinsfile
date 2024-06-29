@@ -26,10 +26,9 @@ pipeline {
         withCredentials([string(credentialsId: 'heroku-api-key', variable: 'HEROKU_API_KEY')]) {
            script {
             bat """
-              echo '// apiKey: (redacted)' > credentials/api_key
-              sh 'heroku login --credentials $HEROKU_API_KEY'
-              sh 'heroku buildpack:set https://github.com/Sagargk2233/seminar.git'
-              sh 'heroku deploy --app $APP_NAME'
+              heroku login --credentials $HEROKU_API_KEY
+              heroku buildpack:set https://github.com/Sagargk2233/seminar.git
+              heroku deploy --app $APP_NAME
             """
           }
         }

@@ -26,17 +26,15 @@ pipeline {
         withCredentials([string(credentialsId: 'heroku-api-key', variable: 'HEROKU_API_KEY')]) {
            script {
             bat """
-              heroku login --credentials $HEROKU_API_KEY
-              heroku buildpack:set https://github.com/Sagargk2233/seminar.git
-              heroku deploy --app $APP_NAME
-              @echo off
-              echo $HEROKU_API_KEY | heroku auth:token --interactive
-              heroku git:remote -a $APP_NAME
+              set HEROKU_API_KEY=%HEROKU_API_KEY%
+              heroku login
+              heroku buildpacks:set https://github.com/Sagargk2233/seminar.git
               git init
               git config user.email "chauhansagargk@gmail.com"
               git config user.name "Sagargk2233"
               git add .
               git commit -m "Deploy to Heroku" || echo "No changes to commit"
+              heroku git:remote -a $APP_NAME
               git push -f heroku HEAD:main
             """
           }

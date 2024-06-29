@@ -21,6 +21,12 @@ pipeline {
         bat 'npm install'
       }
     }
+    stage('Install Heroku') {
+      steps {
+        echo 'Installing Heroku...'
+        bat 'npm install -g heroku'
+      }
+    }
     stage('Build') {
       steps {
         echo 'Building the application...'

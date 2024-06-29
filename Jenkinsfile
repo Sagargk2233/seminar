@@ -4,7 +4,6 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
   environment {
-    HEROKU_API_KEY = credentials('heroku-api-key')
     APP_NAME = 'react-new-portfolio'
   }
   stages {
@@ -23,21 +22,15 @@ pipeline {
     stage('Deploy to Heroku') {
       steps {
         echo 'Deploying to Heroku...'
-        withCredentials([string(credentialsId: 'heroku-api-key', variable: 'HEROKU_API_KEY')]) {
-           script {
-            bat """
-              heroku login
-              heroku buildpacks:set https://github.com/Sagargk2233/seminar.git
-              git init
-              git config user.email "chauhansagargk@gmail.com"
-              git config user.name "Sagargk2233"
-              heroku git:remote -a $APP_NAME
-              git add .
-              git commit -m "Deploy to Heroku" || echo "No changes to commit"
-              git push -f heroku HEAD:main
-            """
-          }
-        }
+        bat """
+          heroku login
+          heroku buildpacks:set https://github.com/Sagargk2233/seminar.git
+          git init
+          git add .
+          git commit -m "Deploy to Heroku"
+          heroku git:remote -a $HEROKU_APP_NAME
+          git push heroku HEAD:main
+        """
       }
     }
   }

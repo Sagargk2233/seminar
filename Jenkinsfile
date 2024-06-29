@@ -27,7 +27,7 @@ pipeline {
            script {
             bat """
               echo $HEROKU_API_KEY | heroku auth:token
-              heroku buildpacks:set https://github.com/Sagargk2233/seminar.git
+              heroku buildpacks:set https://github.com/Sagargk2233/seminar.git -a $HEROKU_APP_NAME
               git init
               git config user.email "chauhansagargk@gmail.com"
               git config user.name "Sagargk2233"

@@ -40,14 +40,11 @@ pipeline {
               echo machine git.heroku.com >> "%USERPROFILE%\\.netrc"
               echo login %HEROKU_EMAIL% >> "%USERPROFILE%\\.netrc"
               echo password %HEROKU_API_KEY% >> "%USERPROFILE%\\.netrc"
-
               git init
               git config user.email "chauhansagargk@gmail.com"
               git config user.name "Sagargk2233"
               git add .
               git commit -m "Deploy to Heroku" || echo "No changes to commit"
-              heroku git:remote -a %APP_NAME%
-              heroku buildpacks:set heroku/nodejs --app %APP_NAME%
               heroku git:remote -a $APP_NAME
               git push heroku main
             """

@@ -26,10 +26,19 @@ pipeline {
         withCredentials([string(credentialsId: 'heroku-api-key', variable: 'HEROKU_API_KEY')]) {
             bat "echo $HEROKU_API_KEY | heroku auth:token"
 
-            bat """
-              heroku buildpacks -a $APP_NAME
-              heroku buildpacks:remove https://github.com/Sagargk2233/seminar.git -a $APP_NAME || echo "Buildpack not found or already removed"
-            """
+            // Check existing buildpacks
+            def buildpacks = bat(script: "heroku buildpacks -a $APP_NAME", returnStdout: true).trim()
+            echo "Existing buildpacks:"
+            echo buildpacks
+
+            // Check if the buildpack is already set
+            def alreadySet = buildpacks.contains("https://github.com/Sagargk2233/seminar.git")
+            if (alreadySet) {
+              // Remove the buildpack if already set
+              bat "heroku buildpacks:remove https://github.com/Sagargk2233/seminar.git -a $APP_NAME"
+              echo "Removed existing buildpack."
+            }
+
 
             bat "heroku buildpacks:set https://github.com/Sagargk2233/seminar.git -a $APP_NAME"
 

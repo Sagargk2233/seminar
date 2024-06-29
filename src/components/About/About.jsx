@@ -51,7 +51,7 @@ export const About = () => {
               <h3>UI Designer</h3>
               <p>
                 I have designed multiple landing pages and have created design
-                systems as well
+                systems as well You can see below
               </p>
             </div>
           </li>

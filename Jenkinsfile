@@ -34,7 +34,13 @@ pipeline {
             // bat "echo $HEROKU_API_KEY | heroku auth:token"
 
             bat """
-            echo machine api.heroku.com\n login %HEROKU_EMAIL%\n password %HEROKU_API_KEY%\n machine git.heroku.com\n login %HEROKU_EMAIL%\n password %HEROKU_API_KEY% > ~/.netrc
+              echo machine api.heroku.com > "%USERPROFILE%\\.netrc"
+              echo login %HEROKU_EMAIL% >> "%USERPROFILE%\\.netrc"
+              echo password %HEROKU_API_KEY% >> "%USERPROFILE%\\.netrc"
+              echo machine git.heroku.com >> "%USERPROFILE%\\.netrc"
+              echo login %HEROKU_EMAIL% >> "%USERPROFILE%\\.netrc"
+              echo password %HEROKU_API_KEY% >> "%USERPROFILE%\\.netrc"
+              
               git init
               git config user.email "chauhansagargk@gmail.com"
               git config user.name "Sagargk2233"

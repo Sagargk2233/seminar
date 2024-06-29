@@ -25,7 +25,12 @@ pipeline {
         echo 'Deploying to Heroku...'
         withCredentials([string(credentialsId: 'heroku-api-key', variable: 'HEROKU_API_KEY')]) {
            script {
-            def branch = bat(script: 'git symbolic-ref --short HEAD', returnStdout: true).trim()
+             def branch = 'main'
+            try {
+              branch = bat(script: 'git symbolic-ref --short HEAD', returnStdout: true).trim()
+            } catch (Exception e) {
+              echo "Failed to detect branch, defaulting to 'main'"
+            }
             bat """
               git init
               git config user.email "chauhansagargk@gmail.com"
@@ -33,7 +38,7 @@ pipeline {
               git remote add heroku https://github.com/Sagargk2233/seminar.git
               git add .
               git commit -m "Deploy to Heroku"
-              git push -f heroku $branch:main
+              git push -f heroku ${branch}:main
             """
           }
         }

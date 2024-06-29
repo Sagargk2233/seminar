@@ -13,19 +13,19 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Building Docker Image...'
-        powershell '''docker build -t $IMAGE_NAME:$IMAGE_TAG .'''
+        bat 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
       }
     }
     stage('Login') {
       steps {
         echo 'Logging in to Heroku Docker registry...'
-        powershell '''echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com'''
+        bat 'echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com'
       }
     }
     stage('Push to Heroku registry') {
       steps {
         echo 'Tagging and pushing Docker image to Heroku registry...'
-        powershell '''
+        bat '''
           docker tag $IMAGE_NAME:$IMAGE_TAG registry.heroku.com/$APP_NAME/web
           docker push registry.heroku.com/$APP_NAME/web
         '''
@@ -34,7 +34,7 @@ pipeline {
     stage('Release the image') {
       steps {
         echo 'Releasing the Docker image on Heroku...'
-        powershell '''
+        bat '''
           heroku container:release web --app=$APP_NAME
         '''
       }
@@ -43,7 +43,7 @@ pipeline {
   post {
     always {
       echo 'Logging out from Docker registry...'
-      powershell 'docker logout'
+      sh 'docker logout'
     }
   }
 }

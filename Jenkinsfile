@@ -13,13 +13,13 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Building Docker Image...'
-        powershell 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
+        powershell '''docker build -t $IMAGE_NAME:$IMAGE_TAG .'''
       }
     }
     stage('Login') {
       steps {
         echo 'Logging in to Heroku Docker registry...'
-        powershell 'echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com'
+        powershell '''echo $HEROKU_API_KEY | docker login --username=_ --password-stdin registry.heroku.com'''
       }
     }
     stage('Push to Heroku registry') {

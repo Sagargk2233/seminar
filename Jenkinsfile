@@ -7,7 +7,7 @@ pipeline {
     HEROKU_API_KEY = credentials('heroku-api-key')
     APP_NAME = 'jenkins-example-react'
     DOCKER_HUB_USERNAME = 'sagar2233'
-    DOCKER_HUB_TOKEN = 'dckr_pat_up26fgJNYfBYDqLId95iqjVjoWg'
+    DOCKER_HUB_TOKEN = credentials('docker-token')
     DOCKER_REPO = 'sagar2233/docker-repo'
     DOCKER_TAG = 'tagname'
   }

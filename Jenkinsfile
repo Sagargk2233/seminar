@@ -23,11 +23,6 @@ pipeline {
                 bat 'npm run build'
             }
         }
-        stage('Link Netlify Site') {
-            steps {
-                bat 'netlify link --id %NETLIFY_SITE_ID% --git-ignore false'
-            }
-        }
         stage('Deploy to Netlify') {
             steps {
                 bat 'netlify deploy --prod --dir=build --site=$NETLIFY_SITE_ID'

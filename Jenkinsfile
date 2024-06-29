@@ -1,32 +1,51 @@
 pipeline {
-    agent any
+  agent any
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '5'))
+  }
+  environment {
+    HEROKU_API_KEY = credentials('heroku-api-key')
+    APP_NAME = 'jenkins-example-react'
+    DOCKER_HUB_USERNAME = 'sagar2233'
+    DOCKER_HUB_TOKEN = 'dckr_pat_up26fgJNYfBYDqLId95iqjVjoWg'
+    DOCKER_REPO = 'sagar2233/docker-repo'
+    DOCKER_TAG = 'tagname'
+  }
+  stages {
+    stage('Build and Push Docker Image') {
+      steps {
+        script {
+          // Authenticate with Docker Hub
+          sh "echo ${DOCKER_HUB_TOKEN} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin"
 
-    environment {
-        NETLIFY_AUTH_TOKEN = credentials('netlify-token') 
-        PATH = "C:\\Users\\Asus\\AppData\\Roaming\\npm;${env.PATH}"
-        NETLIFY_SITE_ID = 'ad389229-c18b-446c-b8ac-8e9a33d79092' // Replace 'your-site-id' with the actual site ID from Netlify
-    }
+          // Build and tag Docker image
+          sh "docker build -t ${DOCKER_REPO}:${DOCKER_TAG} ."
 
-    stages {
-        stage('Checkout') {
-            steps {
-                 git branch: 'main', url: 'https://github.com/Sagargk2233/seminar.git'
-            }
+          // Push Docker image to Docker Hub
+          sh "docker push ${DOCKER_REPO}:${DOCKER_TAG}"
         }
-        stage('Install Dependencies') {
-            steps {
-                bat 'npm install'
-            }
-        }
-        stage('Build') {
-            steps {
-                bat 'npm run build'
-            }
-        }
-        stage('Deploy to Netlify') {
-            steps {
-                bat 'netlify deploy --prod --dir=build --site=$NETLIFY_SITE_ID'
-            }
-        }
+      }
     }
+    stage('Push to Heroku registry') {
+      steps {
+        sh '''
+          docker tag $DOCKER_REPO:$DOCKER_TAG registry.heroku.com/$APP_NAME/web
+          docker push registry.heroku.com/$APP_NAME/web
+        '''
+      }
+    }
+    stage('Release the image') {
+      steps {
+        sh '''
+          heroku container:release web --app=$APP_NAME
+        '''
+      }
+    }
+  }
+  post {
+    always {
+      // Logout from Docker Hub
+      sh 'docker logout'
+    }
+  }
 }

@@ -6,7 +6,6 @@ pipeline {
   environment {
     HEROKU_API_KEY = credentials('heroku-api-key')
     APP_NAME = 'jenkins-example-react'
-    DOCKER_HUB_USERNAME = 'sagar2233'
     DOCKER_HUB_TOKEN = credentials('docker-token')
     DOCKER_REPO = 'sagar2233/docker-repo'
     DOCKER_TAG = 'tagname'
@@ -16,7 +15,7 @@ pipeline {
       steps {
         script {
           // Authenticate with Docker Hub
-          sh "echo ${DOCKER_HUB_TOKEN} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin"
+          sh "echo ${DOCKER_HUB_TOKEN} | docker login -u sagar2233 --password-stdin"
 
           // Build and tag Docker image
           sh "docker build -t ${DOCKER_REPO}:${DOCKER_TAG} ."

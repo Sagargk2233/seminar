@@ -33,7 +33,7 @@ pipeline {
               git add .
               git commit -m "Deploy to Heroku" || echo "No changes to commit"
               heroku git:remote -a $APP_NAME
-              git push heroku main
+              git push heroku master
             """
         }
       }

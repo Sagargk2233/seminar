@@ -26,7 +26,7 @@ pipeline {
         withCredentials([string(credentialsId: 'heroku-api-key', variable: 'HEROKU_API_KEY')]) {
            script {
             bat """
-              heroku login --apikey=$HEROKU_API_KEY
+              echo $HEROKU_API_KEY | heroku auth:token
               heroku buildpacks:set https://github.com/Sagargk2233/seminar.git
               git init
               git config user.email "chauhansagargk@gmail.com"

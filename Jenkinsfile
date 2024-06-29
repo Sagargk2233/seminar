@@ -5,9 +5,16 @@ pipeline {
   }
   environment {
     HEROKU_API_KEY = credentials('heroku-api-key')
+    HEROKU_EMAIL = 'chauhansagargk@gmail.com'
     APP_NAME = 'react-new-portfolio'
   }
   stages {
+    stage('Checkout') {
+      steps {
+        echo 'Checking out the code...'
+        checkout scm
+      }
+    }
     stage('Install Dependencies') {
       steps {
         echo 'Installing dependencies...'
@@ -24,16 +31,17 @@ pipeline {
       steps {
         echo 'Deploying to Heroku...'
         withCredentials([string(credentialsId: 'heroku-api-key', variable: 'HEROKU_API_KEY')]) {
-            bat "echo $HEROKU_API_KEY | heroku auth:token"
+            // bat "echo $HEROKU_API_KEY | heroku auth:token"
 
             bat """
+            echo machine api.heroku.com\n login %HEROKU_EMAIL%\n password %HEROKU_API_KEY%\n machine git.heroku.com\n login %HEROKU_EMAIL%\n password %HEROKU_API_KEY% > ~/.netrc
               git init
               git config user.email "chauhansagargk@gmail.com"
               git config user.name "Sagargk2233"
               git add .
               git commit -m "Deploy to Heroku" || echo "No changes to commit"
               heroku git:remote -a $APP_NAME
-              git push heroku master
+              git push heroku main
             """
         }
       }

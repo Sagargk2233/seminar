@@ -26,6 +26,11 @@ pipeline {
         withCredentials([string(credentialsId: 'heroku-api-key', variable: 'HEROKU_API_KEY')]) {
             bat "echo $HEROKU_API_KEY | heroku auth:token"
 
+            bat """
+              heroku buildpacks -a $APP_NAME
+              heroku buildpacks:remove https://github.com/Sagargk2233/seminar.git -a $APP_NAME || echo "Buildpack not found or already removed"
+            """
+
             bat "heroku buildpacks:set https://github.com/Sagargk2233/seminar.git -a $APP_NAME"
 
             bat """
